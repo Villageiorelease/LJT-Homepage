@@ -69,17 +69,23 @@ exclude:
   - .github
   - .jekyll-assets-cache
   - .sass-cache
+  - .devcontainer
+  - AGENTS.md
   - Dockerfile
   - Gemfile
   - Gemfile.lock
+  - LICENSE
   - README.md
   - docker-compose.yaml
   - package.json
+  - _config_docker.yml
   - node_modules
   - vendor
   - scripts
   - markdown_generator
   - talkmap
+  - images/wiki
+  - images/themes
   - talkmap.ipynb
   - talkmap_out.ipynb
   - talkmap.py
