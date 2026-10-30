@@ -12,7 +12,7 @@ redirect_from:
 Education
 ======
 * Ph.D. in Computer Science, Hong Kong University of Science and Technology (HKUST), 2024–Present (HKUST NLP Group; Supervisor: Professor Junxian He)
-* B.Eng., Shanghai Jiao Tong University (SJTU), 2020–2024 (graduated June 2024)
+* B.Eng., Shanghai Jiao Tong University (SJTU), 2020–2024 (graduated June 2024; undergraduate research advised by Professor Junxian He)
 
 Research Experience
 ======
