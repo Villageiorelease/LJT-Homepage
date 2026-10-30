@@ -1,0 +1,33 @@
+name: Build check (temporary)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1.328.0
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+      - name: Build with Jekyll
+        run: bundle exec jekyll build --baseurl "/LJT-Homepage"
+        env:
+          JEKYLL_ENV: production
+      - name: Verify key pages were generated
+        run: |
+          set -e
+          test -f _site/index.html
+          test -f _site/publications/index.html
+          test -f _site/cv/index.html
+          echo "---- generated publication pages ----"
+          find _site/publication -name "*.html" | sort
+          echo "---- content checks ----"
+          grep -c "SynLogic" _site/index.html
+          grep -c "Zhiyuan Honor Scholarship" _site/index.html
+          grep -c "jliugi@connect.ust.hk" _site/index.html
+          grep -c "C-Eval" _site/publications/index.html
