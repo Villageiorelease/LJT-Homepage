@@ -1,0 +1,50 @@
+name: Verify final site
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - uses: ruby/setup-ruby@v1.328.0
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+          cache-version: 0
+      - run: npm install -g uglify-js
+      - run: uglifyjs assets/js/plugins/jquery.greedy-navigation.js assets/js/_main.js assets/js/theme.js -c -m -o assets/js/main.min.js
+      - name: Build
+        run: bundle exec jekyll build --baseurl "/LJT-Homepage"
+        env:
+          JEKYLL_ENV: production
+      - name: Verify only intended HTML pages and publication content
+        run: |
+          set -euo pipefail
+          test -f _site/index.html
+          test -f _site/publications/index.html
+          for term in SynLogic Vision4Chart Universal_Truthfulness_Hyperplane "Zhiyuan Honor Scholarship" "jliugi@connect.ust.hk" "@junteng88716710" "Professor Junxian He" "Zifei Shan" "Prof. Yu Cheng"; do
+            grep -q "${term}" _site/index.html
+          done
+          for term in SynLogic "On the Perception Bottleneck" "On the Universal Truthfulness Hyperplane" "In-Context Sharpness" C-Eval "Composing Parameter-Efficient"; do
+            grep -q "${term}" _site/publications/index.html
+          done
+          if find _site/publications -mindepth 1 -maxdepth 1 -type d | grep -q .; then
+            echo "Unexpected individual publication directories."
+            find _site/publications -mindepth 1 -maxdepth 1 -type d
+            exit 1
+          fi
+          if [ -e _site/about ] || [ -e _site/about.html ]; then
+            echo "Unexpected About redirect output."
+            exit 1
+          fi
+          if grep -R "Paper Title Number\|Academic Pages is a ready-to-fork" -n _site; then exit 1; fi
+          echo '--- HTML FILES ---'
+          find _site -name '*.html' | sort
