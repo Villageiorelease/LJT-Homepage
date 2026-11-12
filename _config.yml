@@ -126,10 +126,10 @@ kramdown:
   smart_quotes: lsquo,rsquo,ldquo,rdquo
   enable_coderay: false
 
-# Collections
+# Publication records are rendered on the publications index only.
 collections:
   publications:
-    output: true
+    output: false
     permalink: /publications/:name/
 
 # Defaults

@@ -10,9 +10,7 @@ author_profile: true
 {% assign publications = site.publications | sort: "pub_order" %}
 {% for post in publications %}
   <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
-    <h2 class="archive__item-title" itemprop="headline">
-      <a href="{{ post.url | relative_url }}" rel="permalink">{{ post.title }}</a>
-    </h2>
+    <h2 class="archive__item-title" itemprop="headline">{{ post.title }}</h2>
     <p class="page__meta"><em>{{ post.venue }}</em> &middot; {{ post.author_role }}</p>
     <p class="archive__item-excerpt"><strong>Authors:</strong> {{ post.authors }}</p>
     {% if post.code_note %}
