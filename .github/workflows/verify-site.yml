@@ -1,0 +1,51 @@
+name: Verify generated site
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - uses: ruby/setup-ruby@v1.328.0
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+          cache-version: 0
+      - run: npm install -g uglify-js
+      - run: uglifyjs assets/js/plugins/jquery.greedy-navigation.js assets/js/_main.js assets/js/theme.js -c -m -o assets/js/main.min.js
+      - name: Build
+        run: bundle exec jekyll build --baseurl "/LJT-Homepage"
+        env:
+          JEKYLL_ENV: production
+      - name: Verify content and list HTML pages
+        run: |
+          set -euo pipefail
+          test -f _site/index.html
+          test -f _site/publications/index.html
+          grep -q "SynLogic" _site/index.html
+          grep -q "On the Perception Bottleneck of VLMs for Chart Understanding" _site/index.html
+          grep -q "On the Universal Truthfulness Hyperplane Inside LLMs" _site/index.html
+          grep -q "In-Context Sharpness as Alerts" _site/index.html
+          grep -q "C-Eval: A Multi-Level Multi-Discipline Chinese Evaluation Suite for Foundation Models" _site/index.html
+          grep -q "Composing Parameter-Efficient Modules with Arithmetic Operations" _site/index.html
+          grep -q "jliugi@connect.ust.hk" _site/index.html
+          grep -q "Vicent0205" _site/index.html
+          grep -q "junteng88716710" _site/index.html
+          grep -q "Zhiyuan Honor Scholarship" _site/index.html
+          grep -q "MINIMAX" _site/index.html
+          grep -q "Shanghai AI Lab" _site/index.html
+          grep -q "SynLogic" _site/publications/index.html
+          if grep -R "Paper Title Number" -n _site; then exit 1; fi
+          if find _site -path '*/talks/*' -o -path '*/teaching/*' -o -path '*/portfolio/*' | grep -q .; then exit 1; fi
+          echo '--- HTML FILES ---'
+          find _site -name '*.html' | sort
+          echo '--- ABOUT PUBLICATION LINKS ---'
+          grep -o 'href="[^"]*publications[^"]*"' _site/index.html | head -20
